@@ -2,8 +2,15 @@
 
 namespace CompMath_Lab3
 {
-    public class ArrayHelper
+    public static class ArrayHelper
     {
+        private const int Precision = 6;
+        private const int ExponentialAlignment = Precision + 9;
+        private const int FixedPoinAlignment = Precision + 4;
+
+        private static readonly string s_exponentialFormat = $"{{0,{ExponentialAlignment}:E{Precision}}}";
+        private static readonly string s_fixedPointFormat = $"{{0,{FixedPoinAlignment}:F{Precision}}}";
+
         public static double[][] Copy(double[][] source)
         {
             int height = source.Length;
@@ -36,7 +43,7 @@ namespace CompMath_Lab3
 
         public static string ToString(double[][] matrix, bool exponential = false)
         {
-            string format = exponential ? _exponentialFormat : _fixedPointFormat;
+            string format = exponential ? s_exponentialFormat : s_fixedPointFormat;
             return string.Join(
                 Environment.NewLine,
                 matrix.Select(row =>
@@ -44,12 +51,5 @@ namespace CompMath_Lab3
                 )
             );
         }
-
-        private const int _precision = 6;
-        private const int _exponentialAlignment = _precision + 9;
-        private const int _fixedPoinAlignment = _precision + 4;
-
-        private static readonly string _exponentialFormat = $"{{0,{_exponentialAlignment}:E{_precision}}}";
-        private static readonly string _fixedPointFormat = $"{{0,{_fixedPoinAlignment}:F{_precision}}}";
     }
 }

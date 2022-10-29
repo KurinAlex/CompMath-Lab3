@@ -2,6 +2,10 @@
 {
     public struct Matrix
     {
+        private readonly double[][] _matrix;
+        private readonly int _height;
+        private readonly int _width;
+
         public Matrix(double[][] matrix)
         {
             if (matrix.Any(row => row.Length != matrix[0].Length))
@@ -20,9 +24,31 @@
         {
         }
 
-        public double this[int i, int j] => _matrix[i][j];
+        public int Height => _height;
+        public int Width => _width;
         public double Norm => ArrayHelper.GetNorm(_matrix);
+        public double this[int i, int j] => _matrix[i][j];
 
+        public Matrix GetDiagonal()
+        {
+            return new(_matrix
+                .Select((row, i) =>
+                    Enumerable.Repeat(0.0, i)
+                    .Append(row[i])
+                    .Concat(Enumerable.Repeat(0.0, row.Length - i - 1))
+                    .ToArray())
+                .ToArray());
+        }
+        public Matrix GetDiagonalInverse()
+        {
+            return new(_matrix
+                .Select((row, i) =>
+                    Enumerable.Repeat(0.0, i)
+                    .Append(1 / row[i])
+                    .Concat(Enumerable.Repeat(0.0, row.Length - i - 1))
+                    .ToArray())
+                .ToArray());
+        }
         public override string ToString()
         {
             return ArrayHelper.ToString(_matrix);
@@ -30,54 +56,6 @@
         public string ToString(bool exponential)
         {
             return ArrayHelper.ToString(_matrix, exponential);
-        }
-
-        public static Matrix Solve(Matrix A, Matrix B, double error, Writer? writer = null)
-        {
-            if (A._height != A._width)
-            {
-                throw new ArgumentException("Matrix is not square");
-            }
-
-            if (A._height != B._height)
-            {
-                throw new ArgumentException("Matrixes have different number of rows");
-            }
-
-            Matrix D = A.GetDiagonal();
-            Matrix D1 = A.GetDiagonalInverse();
-            Matrix R = A - D;
-
-            Matrix b = D1 * B;
-            Matrix a = D1 * R;
-
-            Matrix X = new(b);
-            Matrix e = B - A * X;
-
-            void Write(string message, int i)
-            {
-                writer?.WriteLine(message);
-                writer?.WriteDivider();
-                writer?.WriteLine($"X_{i}:");
-                writer?.WriteLine(X.ToString());
-                writer?.WriteDivider();
-                writer?.WriteLine($"e_{i} = B - A * X_{i}:");
-                writer?.WriteLine(e.ToString(true));
-                writer?.WriteDivider();
-                writer?.WriteLine($"||e_{i}|| = {e.Norm}");
-                writer?.WriteDivider();
-                writer?.WriteDivider();
-            }
-
-            Write("Start approximation:", 0);
-
-            for (int i = 1; e.Norm >= error; i++)
-            {
-                X = b - a * X;
-                e = B - A * X;
-                Write($"{i} iteration:", i);
-            }
-            return X;
         }
 
         public static Matrix operator -(Matrix left, Matrix right)
@@ -130,29 +108,5 @@
             return new Matrix(res);
         }
 
-        private Matrix GetDiagonal()
-        {
-            return new(_matrix
-                .Select((row, i) =>
-                    Enumerable.Repeat(0.0, i)
-                    .Append(row[i])
-                    .Concat(Enumerable.Repeat(0.0, row.Length - i - 1))
-                    .ToArray())
-                .ToArray());
-        }
-        private Matrix GetDiagonalInverse()
-        {
-            return new(_matrix
-                .Select((row, i) =>
-                    Enumerable.Repeat(0.0, i)
-                    .Append(1 / row[i])
-                    .Concat(Enumerable.Repeat(0.0, row.Length - i - 1))
-                    .ToArray())
-                .ToArray());
-        }
-
-        private readonly double[][] _matrix;
-        private readonly int _height;
-        private readonly int _width;
     }
 }

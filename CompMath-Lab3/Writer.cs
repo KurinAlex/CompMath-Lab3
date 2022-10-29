@@ -2,6 +2,11 @@
 {
     public class Writer
     {
+        private const int DividerLength = 54;
+        private static readonly string s_divider = new('-', DividerLength);
+
+        private readonly StreamWriter _fileWriter;
+
         public Writer(StreamWriter fileWriter) => _fileWriter = fileWriter;
 
         public void WriteLine(string line)
@@ -12,12 +17,7 @@
 
         public void WriteDivider()
         {
-            WriteLine(_divider);
+            WriteLine(s_divider);
         }
-
-        private readonly StreamWriter _fileWriter;
-
-        private const int _dividerLength = 54;
-        private static readonly string _divider = new('-', _dividerLength);
     }
 }

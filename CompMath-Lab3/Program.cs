@@ -4,7 +4,7 @@ namespace Program
 {
     public class Program
     {
-        const string DirectoryPath = "D:\\Sources\\University\\2 course\\CompMath\\CompMath-Lab3";
+        const string DirectoryPath = @"D:\Sources\University\2 course\CompMath\CompMath-Lab3";
         const string InputFolderName = "Input";
         const string MatrixAFileName = "A.txt";
         const string MatrixBFileName = "B.txt";
@@ -14,6 +14,12 @@ namespace Program
         static readonly string matrixBFilePath = Path.Combine(DirectoryPath, InputFolderName, MatrixBFileName);
 
         const double Error = 1e-5;
+
+        static readonly IIterationalMethod[] methods =
+        {
+            new JacobiMethod(),
+            new SeidelMethod()
+        };
 
         static void Main(string[] args)
         {
@@ -37,11 +43,18 @@ namespace Program
                     writer.WriteDivider();
                     writer.WriteDivider();
 
-                    Matrix X = Matrix.Solve(A, B, Error, writer);
+                    foreach(var method in methods)
+                    {
+                        writer.WriteLine($"{method.Name} method:");
+                        writer.WriteDivider();
 
-                    writer.WriteLine("X:");
-                    writer.WriteLine(X.ToString());
-                    writer.WriteDivider();
+                        Matrix X = method.Solve(A, B, Error, writer);
+
+                        writer.WriteLine("X:");
+                        writer.WriteLine(X.ToString());
+                        writer.WriteDivider();
+                        writer.WriteDivider();
+                    }
                 }
                 catch (Exception ex)
                 {
