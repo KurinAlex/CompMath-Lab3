@@ -28,22 +28,7 @@
 
             Matrix e = B;
 
-            void Write(string message, int i)
-            {
-                writer?.WriteLine(message);
-                writer?.WriteDivider();
-                writer?.WriteLine($"X_{i}:");
-                writer?.WriteLine(ArrayHelper.ToString(X));
-                writer?.WriteDivider();
-                writer?.WriteLine($"e_{i} = B - A * X_{i}:");
-                writer?.WriteLine(e.ToString(true));
-                writer?.WriteDivider();
-                writer?.WriteLine($"||e_{i}|| = {e.Norm}");
-                writer?.WriteDivider();
-                writer?.WriteDivider();
-            }
-
-            Write("Start approximation:", 0);
+            Write(writer, X, e, "Start approximation:", 0);
 
             for (int iteration = 1; e.Norm >= error; iteration++)
             {
@@ -59,9 +44,29 @@
                     }
                 }
                 e = B - A * new Matrix(X);
-                Write($"{iteration} iteration:", iteration);
+                Write(writer, X, e, $"{iteration} iteration:", iteration);
             }
             return new(X);
+        }
+
+        private void Write(Writer? writer, double[][] X, Matrix e, string message, int i)
+        {
+            if (writer == null)
+            {
+                return;
+            }
+
+            writer.WriteDivider();
+            writer.WriteLine(message);
+            writer.WriteDivider();
+            writer.WriteLine($"X_{i}:");
+            writer.WriteLine(ArrayHelper.ToString(X));
+            writer.WriteDivider();
+            writer.WriteLine($"e_{i} = B - A * X_{i}:");
+            writer.WriteLine(e.ToString(true));
+            writer.WriteDivider();
+            writer.WriteLine($"||e_{i}|| = {e.Norm}");
+            writer.WriteDivider();
         }
     }
 }

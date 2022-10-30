@@ -41,18 +41,18 @@ namespace Program
 
                     writer.WriteLine("A * X = B");
                     writer.WriteDivider();
-                    writer.WriteDivider();
 
                     foreach(var method in methods)
                     {
+                        writer.WriteDivider();
                         writer.WriteLine($"{method.Name} method:");
                         writer.WriteDivider();
 
                         Matrix X = method.Solve(A, B, Error, writer);
 
+                        writer.WriteDivider();
                         writer.WriteLine("X:");
                         writer.WriteLine(X.ToString());
-                        writer.WriteDivider();
                         writer.WriteDivider();
                     }
                 }
