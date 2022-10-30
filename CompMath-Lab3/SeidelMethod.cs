@@ -4,7 +4,7 @@
     {
         public string Name => "Seidel";
 
-        public Matrix Solve(Matrix A, Matrix B, double error, Writer? writer = null)
+        public Matrix Solve(Matrix A, Matrix B, double error, Writer writer)
         {
             if (A.Height != A.Width)
             {
@@ -49,13 +49,8 @@
             return new(X);
         }
 
-        private void Write(Writer? writer, double[][] X, Matrix e, string message, int i)
+        private void Write(Writer writer, double[][] X, Matrix e, string message, int i)
         {
-            if (writer == null)
-            {
-                return;
-            }
-
             writer.WriteDivider();
             writer.WriteLine(message);
             writer.WriteDivider();
